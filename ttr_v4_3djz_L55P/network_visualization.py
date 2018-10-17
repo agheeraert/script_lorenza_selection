@@ -2,7 +2,7 @@ import sys
 import os
 import numpy as np
 import networkx as nx
-sys.path.append(os.path.realpath(__file__).rsplit('/', 2)[0])
+sys.path.append(os.path.realpath(__file__).rsplit('\\', 2)[0])
 import biographs as bg
 import matplotlib.pyplot as plt
 import amino_acids_conversion

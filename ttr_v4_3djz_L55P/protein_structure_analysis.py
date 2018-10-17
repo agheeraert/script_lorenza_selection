@@ -3,7 +3,7 @@ import os
 from glob import glob
 from Bio.PDB import PDBList
 import networkx as nx
-sys.path.append(os.path.realpath(__file__).rsplit('/', 2)[0])
+sys.path.append(os.path.realpath(__file__).rsplit('\\', 2)[0])
 import biographs as bg
 from secondary_structure import assign_secondary_structure, get_neighbor_structure_relation
 import csv
@@ -34,28 +34,28 @@ os.makedirs('neighborhoods', exist_ok=True)
 
 # load k_w dictionary (from database)
 cwd = os.getcwd()
-db_dir = os.path.abspath(os.path.join(cwd, os.pardir))
-k_w = pickle.load(open(os.path.join(db_dir, 'k_w.p'), 'rb'))
+db_dir = cwd.rsplit('\\', 1)[0]
+k_w = pickle.load(open(db_dir + '\\k_w.p', 'rb'))
 
 # CREATE DATABASE
 
-current_path = os.path.realpath(__file__).rsplit('/', 1)[0]
+current_path = os.path.realpath(__file__).rsplit('\\', 1)[0]
 
 with open('aminoacids.txt', 'r') as f:
     amino_acids = [aa.rsplit('\n')[0] for aa in f]
 
 # Create a temporal directory called `pdb'
-pdbs_path = os.path.join(db_dir, 'pdb')
+pdbs_path = os.path.join(current_path, 'pdb')
 
-if not os.path.isdir(pdbs_path):
+if pdbs_path not in glob(os.path.join(current_path, '*')):
     os.mkdir(pdbs_path)
 
-with open(os.path.join(cwd, 'pdbs.txt'), 'r') as f:
+with open(os.path.join(current_path, 'pdbs.txt'), 'r') as f:
     pdbs = [pdb[:-1] for pdb in f]
     if len(pdbs) == 1:
         pdb_id = pdbs[0]
     else:
-        pdb_id = current_path.rsplit('/', 1)[1]
+        pdb_id = current_path.rsplit('\\', 1)[1]
 
 pdbl = PDBList(obsolete_pdb=True)
 
@@ -101,7 +101,8 @@ for pdb in pdbs:
         weight = nx.degree(net, residue.parent.id + str(residue.id[1]),
                            weight='weight')
         restype = residue.resname
-        resname = pdb.rsplit('/', 1)[1][:-4] + residue.parent.id + str(residue.id[1])
+        resname = pdb.rsplit('\\', 1)[1][:-4] + residue.parent.id \
+                + str(residue.id[1])
         size = len(residue)
         seqpos = residue.id[1]
         if seqpos not in selected_positions:
@@ -225,7 +226,7 @@ plt.xlabel('w/k')
 plt.ylabel('P(w/k)')
 H = herfindhal_index(neigh_watch)
 N = len(neigh_watch)
-t = '$/newline$'.join(['', 'Herfindhal index:', 'H = %.3f' %(H), '1/H = %.1f' %(1 / H),
+t = '$\\newline$'.join(['', 'Herfindhal index:', 'H = %.3f' %(H), '1/H = %.1f' %(1 / H),
                  'N = %s' %(N), 'N. outliers = %.3f * N' %(1 - 1 / (H * N))])
 plt.text(0.1, 15, t, verticalalignment='center',
         horizontalalignment='left', fontsize=18)
@@ -238,7 +239,7 @@ plt.savefig('neighborhood_watch_distribution1.pdf')
 #plt.ylabel('P(w/k)', fontsize=22)
 #H = herfindhal_index(neigh_watch)
 #N = len(neigh_watch)
-#t = '$/newline$'.join(['', 'Herfindhal index:', 'H = %.3f' %(H), '1/H = %.1f' %(1 / H),
+#t = '$\\newline$'.join(['', 'Herfindhal index:', 'H = %.3f' %(H), '1/H = %.1f' %(1 / H),
 #                 'N = %s' %(N), 'N. outliers = %.3f * N' %(1 - 1 / (H * N))])
 #plt.text(0.1, 0.15, t, verticalalignment='center',
 #        horizontalalignment='left', fontsize=18)
@@ -409,29 +410,29 @@ pos_circular = nx.circular_layout(net)
 
 network_visualization.draw_network(net, node_labels, color_map=color_map,
                                    draw_edges=False, draw_labels=False,
-                                   name='network_pictures/' + pdb_id + '_color',
+                                   name='network_pictures\\' + pdb_id + '_color',
                                    figsize=(50, 50), pos=pos_spring)
 network_visualization.draw_network(net, node_labels, sizes=sizes,
                                    draw_labels=False,
-                                   name='network_pictures/' + pdb_id + '_size',
+                                   name='network_pictures\\' + pdb_id + '_size',
                                    figsize=(50, 50), pos=pos_spring)
 network_visualization.draw_network(net, node_labels, sizes=sizes,
                                    color_map=color_map, draw_labels=False,
-                                   name='network_pictures/' + pdb_id + '_colorsize',
+                                   name='network_pictures\\' + pdb_id + '_colorsize',
                                    figsize=(50, 50), pos=pos_spring)
 
 network_visualization.draw_network(net2, node_labels2, color_map='deepskyblue',
                                    draw_edges=False, draw_labels=False,
-                                   name='network_pictures/' + pdb_id + '_nodes',
+                                   name='network_pictures\\' + pdb_id + '_nodes',
                                    figsize=(50, 50), pos=pos_spring)
 network_visualization.draw_network(net2, node_labels2, sizes=sizes2,
                                    color_map='deepskyblue', draw_labels=False,
-                                   name='network_pictures/' + pdb_id + '_links',
+                                   name='network_pictures\\' + pdb_id + '_links',
                                    figsize=(50, 50), pos=pos_spring)
 network_visualization.draw_network(net3, node_labels3, sizes=sizes3,
                                    edge_color_map=edge_color_map,
                                    draw_labels=False,
-                                   name='network_pictures/' + pdb_id +
+                                   name='network_pictures\\' + pdb_id +
                                    '_links_color', figsize=(50, 50),
                                    pos=pos_spring, facecolor='silver')
 
@@ -551,9 +552,9 @@ for node in net.nodes:
 
 
 # DRAW PERTURBATION NETWORK
-path_ref = os.getcwd().rsplit('/', 1)[0] + '/' + reference_folder
-net_ref = pickle.load(open(path_ref + '/net_linkcolor.p', 'rb'))
-db_ref = pd.DataFrame(pd.read_csv(path_ref + "/database_pos_2.csv"))
+path_ref = os.getcwd().rsplit('\\', 1)[0] + '\\' + reference_folder
+net_ref = pickle.load(open(path_ref + '\\net_linkcolor.p', 'rb'))
+db_ref = pd.DataFrame(pd.read_csv(path_ref + "\\database_pos_2.csv"))
 
 (net_p, node_labels_p, size_map_p,
  color_map_p, edge_color_dict_p,
@@ -587,7 +588,7 @@ network_visualization.draw_network(net_p, node_labels_p, sizes=size_map_p,
                                    edge_color_map=edge_color_map_p,
                                    color_map=color_map_p,
                                    draw_labels=True,
-                                   name= 'network_pictures/' + pdb_id +
+                                   name= 'network_pictures\\' + pdb_id +
                                    'perturbation_net_links_color', figsize=(20, 30),
                                    node_edge_colors=node_borders_p, pos = nodes_pos)
 
@@ -598,7 +599,7 @@ for node in net_p.nodes:
     network_visualization.draw_neighborhood_perturbation(net_p,
                                 node, node_labels_p, size_map_p, color_map_p,
                                 edge_color_map_p, node_borders_p,
-                                file_name='neighborhoods_perturbation/'+
+                                file_name='neighborhoods_perturbation\\'+
                                 pdb_id + node)
 
 sizes_dict = {node: size_map_p[i] for i, node in enumerate(net_p.nodes)}
@@ -666,7 +667,7 @@ network_visualization.draw_network(tree, node_labels_tree, sizes=600,
                                    edge_color_map=edge_color_tree,
                                    color_map = color_tree,
                                    draw_labels=True,
-                                   name= 'network_pictures/' + pdb_id +
+                                   name= 'network_pictures\\' + pdb_id +
                                    'perturbation_tree_' + source + '_all', figsize=(10, 10),
                                    pos=pos_tree, labels_size=18,
                                    node_edge_size=1)

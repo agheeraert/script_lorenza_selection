@@ -3,7 +3,7 @@ import os
 from glob import glob
 from Bio.PDB import PDBList
 import networkx as nx
-sys.path.append(os.path.realpath(__file__).rsplit('/', 2)[0])
+sys.path.append(os.path.realpath(__file__).rsplit('\\', 2)[0])
 import biographs as bg
 from secondary_structure import assign_secondary_structure, get_neighbor_structure_relation
 import csv
@@ -41,16 +41,16 @@ else:
     non_pathogenic = []
     both = []
     
-os.makedirs(folder_path + '/neighborhoods', exist_ok=True)
+os.makedirs(folder_path + '\\neighborhoods', exist_ok=True)
 
 # load k_w dictionary (from database)
 cwd = os.getcwd()
-db_dir = cwd.rsplit('/', 1)[0]
-k_w = pickle.load(open(db_dir + '/k_w.p', 'rb'))
+db_dir = cwd.rsplit('\\', 1)[0]
+k_w = pickle.load(open(db_dir + '\\k_w.p', 'rb'))
 
 # CREATE DATABASE
 
-current_path = os.path.realpath(__file__).rsplit('/', 1)[0]
+current_path = os.path.realpath(__file__).rsplit('\\', 1)[0]
 
 with open('aminoacids.txt', 'r') as f:
     amino_acids = [aa.rsplit('\n')[0] for aa in f]
@@ -66,7 +66,7 @@ with open(os.path.join(current_path, 'pdbs.txt'), 'r') as f:
     if len(pdbs) == 1:
         pdb_id = pdbs[0]
     else:
-        pdb_id = current_path.rsplit('/', 1)[1]
+        pdb_id = current_path.rsplit('\\', 1)[1]
 
 pdbl = PDBList(obsolete_pdb=True)
 
@@ -110,7 +110,7 @@ for pdb in pdbs:
             weight = nx.degree(net, residue.parent.id + str(residue.id[1]),
                                weight='weight')
             restype = residue.resname
-            resname = pdb.rsplit('/', 1)[1][:-4] + residue.parent.id \
+            resname = pdb.rsplit('\\', 1)[1][:-4] + residue.parent.id \
                     + str(residue.id[1])
             size = len(residue)
             seqpos = residue.id[1]
@@ -165,14 +165,14 @@ sortedlist_pos = sorted(database_1, key=lambda row: row[2])
 sortedlist_pos_2 = sorted(database_2, key=lambda row: row[2])
 
     
-with open(folder_path + "/database_pos_1.csv", "w", newline = '') as f:
+with open(folder_path + "\\database_pos_1.csv", "w", newline = '') as f:
     writer = csv.writer(f)
     writer.writerow(['Residue name','Position', 'Sequence position', 'Type of residue',
                      'Degree', 'Weight', 'Weight/Degree', 'Atomic number', 'Secondary structure', 'N. others',
                      'Neighbor position', 'Neighbor type', 'Pairwise weight', 'Relation'])
     writer.writerows(sortedlist_pos)
     
-with open(folder_path + "/database_pos_2.csv", "w", newline = '') as f:
+with open(folder_path + "\\database_pos_2.csv", "w", newline = '') as f:
     writer = csv.writer(f)
     writer.writerow(['Residue name','Position', 'Sequence position', 'Type of residue',
                      'Degree', 'Weight', 'Weight/Degree',
@@ -224,11 +224,11 @@ plt.xlabel('w/k', fontsize=22)
 plt.ylabel('P(w/k)', fontsize=22)
 H = herfindhal_index(neigh_watch)
 N = len(neigh_watch)
-t = '$/newline$'.join(['', 'Herfindhal index:', 'H = %.3f' %(H), '1/H = %.1f' %(1 / H),
+t = '$\\newline$'.join(['', 'Herfindhal index:', 'H = %.3f' %(H), '1/H = %.1f' %(1 / H),
                  'N = %s' %(N), 'N. outliers = %.3f * N' %(1 - 1 / (H * N))])
 plt.text(0.1, 0.15, t, verticalalignment='center',
         horizontalalignment='left', fontsize=18)
-plt.savefig(folder_path + '/neighborhood_watch_distribution1.pdf')
+plt.savefig(folder_path + '\\neighborhood_watch_distribution1.pdf')
 
 
 fig, ax1 = plt.subplots(figsize=(10,10))
@@ -245,13 +245,13 @@ plt.yticks([])
 plt.xticks(fontsize=18)
 plt.xlabel('w/k', fontsize=18)
 plt.xlim(-1, int(max_value + 1) + 1)
-plt.savefig(folder_path + '/neighborhood_watch_distribution2.pdf')
+plt.savefig(folder_path + '\\neighborhood_watch_distribution2.pdf')
 plt.show()
 
         
 # DRAW PROTEIN NETWORK
         
-os.makedirs(folder_path + '/network_pictures', exist_ok=True)
+os.makedirs(folder_path + '\\network_pictures', exist_ok=True)
 
 (net,
 node_labels,
@@ -288,29 +288,29 @@ pos_circular = nx.circular_layout(net)
 
 network_visualization.draw_network(net, node_labels, color_map=color_map,
                                    draw_edges=False, draw_labels=False,
-                                   name=folder_path + '/network_pictures/' + pdb_id + '_color', 
+                                   name=folder_path + '\\network_pictures\\' + pdb_id + '_color', 
                                    figsize=(50, 50), pos=pos_spring)
 network_visualization.draw_network(net, node_labels, sizes=sizes,
                                    draw_labels=False,
-                                   name=folder_path + '/network_pictures/' + pdb_id + '_size',
+                                   name=folder_path + '\\network_pictures\\' + pdb_id + '_size',
                                    figsize=(50, 50), pos=pos_spring)
 network_visualization.draw_network(net, node_labels, sizes=sizes,
                                    color_map=color_map, draw_labels=False,
-                                   name=folder_path + '/network_pictures/' + pdb_id + '_colorsize',
+                                   name=folder_path + '\\network_pictures\\' + pdb_id + '_colorsize',
                                    figsize=(50, 50), pos=pos_spring)
 
 network_visualization.draw_network(net2, node_labels2, color_map='deepskyblue',
                                    draw_edges=False, draw_labels=False,
-                                   name=folder_path + '/network_pictures/' + pdb_id + '_nodes',
+                                   name=folder_path + '\\network_pictures\\' + pdb_id + '_nodes',
                                    figsize=(50, 50), pos=pos_spring)
 network_visualization.draw_network(net2, node_labels2, sizes=sizes2,
                                    color_map='deepskyblue', draw_labels=False,
-                                   name=folder_path + '/network_pictures/' + pdb_id + '_links',
+                                   name=folder_path + '\\network_pictures\\' + pdb_id + '_links',
                                    figsize=(50, 50), pos=pos_spring)
 network_visualization.draw_network(net3, node_labels3, sizes=[s / 50 for s in sizes3],
                                    edge_color_map=edge_color_map,
                                    draw_labels=True,
-                                   name=folder_path + '/network_pictures/' + pdb_id +
+                                   name=folder_path + '\\network_pictures\\' + pdb_id +
                                    '_links_color', figsize=(50, 50),
                                    pos=pos_spring, facecolor='silver')
 
@@ -358,7 +358,7 @@ plt.text(0.5, 3, '15 $leq$ W/k $<$ 20',fontsize=16)
 plt.text(0.5, 4, '20 $leq$ W/k $<$ 25',fontsize=16)
 plt.text(0.5, 5, 'W/k $geq$ 25',fontsize=16)
 plt.tight_layout()
-plt.savefig(folder_path + '/network_pictureslegend_color.pdf')
+plt.savefig(folder_path + '\\network_pictureslegend_color.pdf')
 plt.close()
 
 texts = ['$w_{ij}   <$ 10', '10 $leq  w_{ij}   <$ 20', '20 $leq  w_{ij}   <$ 30',
@@ -375,7 +375,7 @@ for index, c in enumerate(colors1):
     ax1.text(0.3, 0, texts[index], fontsize=16)
 plt.axis('off')
 plt.tight_layout()
-plt.savefig(folder_path + '/network_pictureslegend_link_color.pdf')
+plt.savefig(folder_path + '\\network_pictureslegend_link_color.pdf')
 plt.close()
 
 
@@ -391,7 +391,7 @@ plt.text(0.5, 1, '5 $leq$ k $<$ 9',fontsize=16)
 plt.text(0.5, 2, '9 $leq$ k $<$ 13',fontsize=16)
 plt.text(0.5, 3, 'k $geq$ 13',fontsize=16)
 plt.tight_layout()
-plt.savefig(folder_path + '/network_pictureslegend_size_k.pdf')
+plt.savefig(folder_path + '\\network_pictureslegend_size_k.pdf')
 plt.close()
 
 plt.figure()  
@@ -408,26 +408,26 @@ plt.text(0.5, 9, '15 $leq$ W/k $<$ 20',fontsize=16)
 plt.text(0.5, 12, '20 $leq$ W/k $<$ 25',fontsize=16)
 plt.text(0.5, 15, 'W/k $geq$ 25',fontsize=16)
 plt.tight_layout()
-plt.savefig(folder_path + '/network_pictureslegend_size_nw.pdf')
+plt.savefig(folder_path + '\\network_pictureslegend_size_nw.pdf')
 plt.close()
 
 # DRAW NEIGHBORHOODS
 
-os.makedirs(folder_path + '/neighborhoods', exist_ok=True)
+os.makedirs(folder_path + '\\neighborhoods', exist_ok=True)
 
 for node in net.nodes:
     if node[0] != 'A': break            
     network_visualization.draw_neighborhood(net, node, node_labels, pathogenic,
                                             non_pathogenic, both, save_fig=True,
-                                            file_name=folder_path + '/neighborhoods/'+
+                                            file_name=folder_path + '\\neighborhoods\\'+
                                             pdb_id + node, threshold_edge=20,
                                             sort=False)
 
 
 # DRAW PERTURBATION NETWORK
-path_ref = os.getcwd().rsplit('/', 1)[0] + '/' + reference_folder
-net_ref = pickle.load(open(path_ref + '/' + dim + 'net_linkcolor.p', 'rb'))
-db_ref = pd.DataFrame(pd.read_csv(path_ref + "/database_pos_2.csv"))
+path_ref = os.getcwd().rsplit('\\', 1)[0] + '\\' + reference_folder
+net_ref = pickle.load(open(path_ref + '\\' + dim + 'net_linkcolor.p', 'rb'))
+db_ref = pd.DataFrame(pd.read_csv(path_ref + "\\database_pos_2.csv"))
 
 (net_p, node_labels_p, size_map_p,
  color_map_p, edge_color_dict_p,
@@ -467,20 +467,20 @@ network_visualization.draw_network(net_p, node_labels_p, sizes=size_map_p,
                                    edge_color_map=edge_color_map_p,
                                    color_map=color_map_p,
                                    draw_labels=True,
-                                   name= folder_path + '/network_pictures/' +
+                                   name= folder_path + '\\network_pictures\\' +
                                    pdb_id + 'perturbation_net_links_color',
                                    figsize=(20, 30),
                                    node_edge_colors=node_borders_p,
                                    pos = nodes_pos)
 
-os.makedirs(folder_path + '/neighborhoods_perturbation', exist_ok=True)
+os.makedirs(folder_path + '\\neighborhoods_perturbation', exist_ok=True)
 
 for node in net_p.nodes:
     if node[0] != 'A': continue
     network_visualization.draw_neighborhood_perturbation(net_p,
                                 node, node_labels_p, size_map_p, color_map_p,
                                 edge_color_map_p, node_borders_p,
-                                file_name=folder_path + '/neighborhoods_perturbation/'+
+                                file_name=folder_path + '\\neighborhoods_perturbation\\'+
                                 pdb_id + node)
 
 sizes_dict = {node: size_map_p[i] for i, node in enumerate(net_p.nodes)}
@@ -557,7 +557,7 @@ network_visualization.draw_network(tree, node_labels_tree, sizes=600,
                                    edge_color_map=edge_color_tree,
                                    color_map = color_tree,
                                    draw_labels=True,
-                                   name= folder_path + '/network_pictures/' + pdb_id +
+                                   name= folder_path + '\\network_pictures\\' + pdb_id +
                                    'perturbation_tree_' + source + '_' + dim, figsize=(10, 10),
                                    pos=pos_tree, labels_size=18,
                                    node_edge_size=1)

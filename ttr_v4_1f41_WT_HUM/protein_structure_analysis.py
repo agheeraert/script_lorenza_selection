@@ -3,7 +3,7 @@ import os
 from glob import glob
 from Bio.PDB import PDBList
 import networkx as nx
-sys.path.append(os.path.realpath(__file__).rsplit('/', 2)[0])
+sys.path.append(os.path.realpath(__file__).rsplit('\\', 2)[0])
 import biographs as bg
 from secondary_structure import assign_secondary_structure, get_neighbor_structure_relation
 import csv
@@ -31,12 +31,12 @@ os.makedirs('neighborhoods', exist_ok=True)
 
 # load k_w dictionary (from database)
 cwd = os.getcwd()
-db_dir = cwd.rsplit('/', 1)[0]
-k_w = pickle.load(open(db_dir + '/k_w.p', 'rb'))
+db_dir = cwd.rsplit('\\', 1)[0]
+k_w = pickle.load(open(db_dir + '\\k_w.p', 'rb'))
 
 # CREATE AA NETWORK
 
-current_path = os.path.realpath(__file__).rsplit('/', 1)[0]
+current_path = os.path.realpath(__file__).rsplit('\\', 1)[0]
 
 with open('aminoacids.txt', 'r') as f:
     amino_acids = [aa.rsplit('\n')[0] for aa in f]
@@ -52,7 +52,7 @@ with open(os.path.join(current_path, 'pdbs.txt'), 'r') as f:
     if len(pdbs) == 1:
         pdb_id = pdbs[0]
     else:
-        pdb_id = current_path.rsplit('/', 1)[1]
+        pdb_id = current_path.rsplit('\\', 1)[1]
 
 pdbl = PDBList(obsolete_pdb=True)
 
@@ -97,7 +97,7 @@ for pdb in pdbs:
         weight = nx.degree(net, residue.parent.id + str(residue.id[1]),
                            weight='weight')
         restype = residue.resname
-        resname = pdb.rsplit('/', 1)[1][:-4] + residue.parent.id \
+        resname = pdb.rsplit('\\', 1)[1][:-4] + residue.parent.id \
                 + str(residue.id[1])
         size = len(residue)
         seqpos = residue.id[1]
@@ -224,7 +224,7 @@ plt.xlabel('w/k')
 plt.ylabel('P(w/k)')
 H = herfindhal_index(neigh_watch)
 N = len(neigh_watch)
-t = '$/newline$'.join(['', 'Herfindhal index:', 'H = %.3f' %(H), '1/H = %.1f' %(1 / H),
+t = '$\\newline$'.join(['', 'Herfindhal index:', 'H = %.3f' %(H), '1/H = %.1f' %(1 / H),
                  'N = %s' %(N), 'N. outliers = %.3f * N' %(1 - 1 / (H * N))])
 plt.text(0.1, 25, t, verticalalignment='center',
         horizontalalignment='left', fontsize=18)
@@ -396,29 +396,29 @@ pos_circular = nx.circular_layout(net)
 network_visualization.draw_network(net,
                                    node_labels, color_map=color_map,
                                    draw_edges=False, draw_labels=False,
-                                   name='network_pictures/' + pdb_id + '_color',
+                                   name='network_pictures\\' + pdb_id + '_color',
                                    figsize=(50, 50), pos=pos_spring)
 network_visualization.draw_network(net, node_labels, sizes=sizes,
                                    draw_labels=False,
-                                   name='network_pictures/' + pdb_id + '_size',
+                                   name='network_pictures\\' + pdb_id + '_size',
                                    figsize=(50, 50), pos=pos_spring)
 network_visualization.draw_network(net, node_labels, sizes=sizes,
                                    color_map=color_map, draw_labels=False,
-                                   name='network_pictures/' + pdb_id + '_colorsize',
+                                   name='network_pictures\\' + pdb_id + '_colorsize',
                                    figsize=(50, 50), pos=pos_spring)
 
 network_visualization.draw_network(net2, node_labels2, color_map='deepskyblue',
                                    draw_edges=False, draw_labels=False,
-                                   name='network_pictures/' + pdb_id + '_nodes',
+                                   name='network_pictures\\' + pdb_id + '_nodes',
                                    figsize=(50, 50), pos=pos_spring)
 network_visualization.draw_network(net2, node_labels2, sizes=sizes2,
                                    color_map='deepskyblue', draw_labels=False,
-                                   name='network_pictures/' + pdb_id + '_links',
+                                   name='network_pictures\\' + pdb_id + '_links',
                                    figsize=(50, 50), pos=pos_spring)
 network_visualization.draw_network(net3, node_labels3, sizes=sizes3,
                                    edge_color_map=edge_color_map,
                                    draw_labels=False,
-                                   name='network_pictures/' + pdb_id +
+                                   name='network_pictures\\' + pdb_id +
                                    '_links_color', figsize=(50, 50),
                                    pos=pos_spring, facecolor='silver')
 
@@ -531,7 +531,7 @@ plt.close()
 #    net2, node_labels2, size_map2, color_map2, edge_color_map2 = network_visualization.create_network(pdb_id, database=db_2, net=net, colors='mutations', sizes='neighborhood_watch_sharp',
 #                                                        pathogenic=pathogenic, non_pathogenic=non_pathogenic, both=both)
 #    
-#    network_visualization.draw_network(net, node_labels, sizes=sizes, color_map=color_map2, draw_labels=False, name='network_pictures/' + pdb_id + '_mutations', figsize=(50, 50), pos=pos_spring)
+#    network_visualization.draw_network(net, node_labels, sizes=sizes, color_map=color_map2, draw_labels=False, name='network_pictures\\' + pdb_id + '_mutations', figsize=(50, 50), pos=pos_spring)
 #
 #
 #    # LEGENDS
@@ -686,7 +686,7 @@ plt.close()
 #    report_cases = {}
 #    number_cases = {}
 #    
-#    wijdict = pickle.load(open(db_dir + '/wijdict.p', 'rb'))
+#    wijdict = pickle.load(open(db_dir + '\\wijdict.p', 'rb'))
 #    
 #    for [aa1, pos, aa2] in mutations:
 #        name_mut = aa1 + pos + aa2
@@ -857,7 +857,7 @@ node_labels_subnet = {node: node_labels3[node] for node in subnet.nodes}
 network_visualization.draw_network(subnet, node_labels_subnet, sizes=nw_subnet_size,
                                    edge_color_map=edge_colors_subnet,
                                    draw_labels=False,
-                                   name='network_pictures/' + pdb_id +
+                                   name='network_pictures\\' + pdb_id +
                                    '_links_color' + addname, figsize=(50, 50),
                                    pos=pos_spring, facecolor='silver')
 
@@ -924,7 +924,7 @@ node_labels_subnet = {node: node_labels3[node] for node in subnet.nodes}
 network_visualization.draw_network(subnet, node_labels_subnet,
                                    edge_color_map=edge_colors_subnet,
                                    draw_labels=True,
-                                   name='network_pictures/' + pdb_id +
+                                   name='network_pictures\\' + pdb_id +
                                    '_links_color' + addname, figsize=(50, 50),
                                    pos=pos_spring, facecolor='silver')
 
@@ -932,6 +932,6 @@ network_visualization.draw_network(subnet, node_labels_subnet,
 #network_visualization.draw_network(subnet, node_labels3, sizes=nw_subnet_size,
 #                                   edge_color_map=edge_colors_subnet,
 #                                   draw_labels=False,
-#                                   name='network_pictures/' + pdb_id +
+#                                   name='network_pictures\\' + pdb_id +
 #                                   '_links_color' + addname, figsize=(50, 50),
 #                                   pos=pos_spring, facecolor='silver')
